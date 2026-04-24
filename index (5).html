@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferry Golfo · Puntarenas ↔ Paquera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --deep: #0d2240;
+    --mid: #1a3a5c;
+    --teal: #1b8c7a;
+    --teal-light: #2ab09b;
+    --gold: #c9a84c;
+    --gold-light: #e8c96b;
+    --foam: #e8f4f2;
+    --mist: #b8d4cc;
+    --text: #f0ede6;
+    --text-muted: #8fa8b8;
+    --card-bg: rgba(255,255,255,0.05);
+    --card-border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ocean wave background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% -20%, #1a3a5c 0%, transparent 70%),
+      radial-gradient(ellipse 80% 40% at 80% 100%, #0f2a3a 0%, transparent 60%),
+      var(--navy);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 0 100px; }
+
+  /* Header */
+  .header {
+    padding: 28px 24px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 0.5px solid var(--card-border);
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .logo-wave {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    font-weight: 500;
+  }
+
+  .logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  .lang-switcher {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 4px;
+  }
+
+  .lang-btn {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0;
+    transition: color 0.2s;
+  }
+
+  .lang-btn.active { color: var(--gold); font-weight: 500; }
+  .lang-btn:hover { color: var(--text); }
+  .lang-sep { color: var(--card-border); font-size: 10px; }
+
+  /* Route banner */
+  .route-banner {
+    margin: 24px 24px 0;
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .route-port {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .port-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text);
+  }
+
+  .port-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .route-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .arrow-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--teal-light);
+    font-size: 18px;
+  }
+
+  .route-duration {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  /* Ferry animation */
+  .ferry-track {
+    height: 2px;
+    width: 80px;
+    background: linear-gradient(90deg, var(--teal) 0%, var(--teal-light) 100%);
+    border-radius: 2px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .ferry-icon {
+    position: absolute;
+    top: -7px;
+    left: 0;
+    font-size: 14px;
+    animation: sailAcross 4s ease-in-out infinite;
+  }
+
+  @keyframes sailAcross {
+    0%, 100% { left: 0; opacity: 1; }
+    45% { left: calc(100% - 14px); opacity: 1; }
+    50% { left: calc(100% - 14px); opacity: 0; }
+    51% { left: 0; opacity: 0; }
+    55% { left: 0; opacity: 1; }
+  }
+
+  /* Schedule strip */
+  .schedule-strip {
+    margin: 16px 24px 0;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .schedule-strip::-webkit-scrollbar { display: none; }
+
+  .time-pill {
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    transition: all 0.2s;
+  }
+
+  .time-pill:hover { border-color: var(--teal); background: rgba(27,140,122,0.1); }
+
+  .time-val { font-weight: 500; color: var(--text); font-size: 13px; }
+  .time-dir { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    margin: 28px 24px 0;
+    border-bottom: 0.5px solid var(--card-border);
+    gap: 0;
+  }
+
+  .tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 8px 14px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .tab::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5px;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+    border-radius: 2px 2px 0 0;
+  }
+
+  .tab.active { color: var(--text); }
+  .tab.active::after { transform: scaleX(1); }
+  .tab:hover { color: var(--text); }
+
+  .tab-icon { font-size: 14px; }
+
+  /* Panels */
+  .panel { display: none; padding: 24px 24px 0; }
+  .panel.active { display: block; }
+
+  /* Section label */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  /* Tour cards */
+  .tours-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tour-card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .tour-card:hover { border-color: rgba(255,255,255,0.15); }
+
+  .tour-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 18px 14px;
+  }
+
+  .tour-emoji {
+    font-size: 32px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .tour-info { flex: 1; }
+
+  .tour-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.25;
+  }
+
+  .tour-subtitle {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 6px;
+  }
+
+  .tour-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .tour-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--card-border);
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .tag.highlight {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .tour-footer {
+    padding: 12px 18px 16px;
+    border-top: 0.5px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .price-block { display: flex; flex-direction: column; gap: 1px; }
+  .price-from { font-size: 10px; color: var(--text-muted); }
+  .price-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--gold);
+  }
+  .price-per { font-size: 10px; color: var(--text-muted); }
+
+  .book-btn {
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 9px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .book-btn:hover { background: var(--teal-light); }
+
+  /* Curiosities */
+  .curio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .curio-card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .curio-card:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-1px); }
+
+  .curio-card.expanded {
+    grid-column: span 2;
+  }
+
+  .curio-emoji { font-size: 28px; margin-bottom: 10px; line-height: 1; }
+
+  .curio-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+
+  .curio-teaser {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .curio-full {
+    display: none;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 0.5px solid var(--card-border);
+  }
+
+  .curio-card.expanded .curio-full { display: block; }
+  .curio-card.expanded .curio-teaser { display: none; }
+
+  .curio-tap {
+    font-size: 10px;
+    color: var(--teal-light);
+    margin-top: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Wildlife radar */
+  .wildlife-section {
+    margin-top: 28px;
+  }
+
+  .wildlife-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 0.5px solid var(--card-border);
+  }
+
+  .wildlife-row:last-child { border-bottom: none; }
+
+  .wildlife-emoji { font-size: 22px; flex-shrink: 0; width: 32px; text-align: center; }
+
+  .wildlife-info { flex: 1; }
+
+  .wildlife-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .wildlife-detail {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .sighting-bar {
+    width: 60px;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .sighting-fill {
+    height: 100%;
+    background: var(--teal-light);
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  /* Info panel */
+  .info-section { margin-bottom: 28px; }
+
+  .info-card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+
+  .info-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 0.5px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+
+  .info-key { color: var(--text-muted); }
+  .info-val { color: var(--text); font-weight: 500; text-align: right; }
+  .info-val.highlight { color: var(--gold); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(10, 22, 40, 0.95);
+    border-top: 0.5px solid var(--card-border);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 20px;
+    backdrop-filter: blur(20px);
+    z-index: 100;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 20px;
+    transition: all 0.2s;
+  }
+
+  .nav-icon { font-size: 20px; }
+  .nav-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-item.active .nav-label { color: var(--gold); }
+
+  /* Booking modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 15, 30, 0.88);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #0e2035;
+    border: 0.5px solid var(--card-border);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 24px 40px;
+    width: 100%;
+    max-width: 680px;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 36px; height: 3px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .modal-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .form-group { margin-bottom: 14px; }
+
+  .form-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid var(--card-border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--teal); }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .submit-btn:hover { background: var(--teal-light); }
+
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: var(--text-muted);
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .modal { position: relative; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
+    background: var(--teal);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 300;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Offline banner */
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <span class="logo-wave">⚓ Travesía</span>
+      <span class="logo-name">Ferry Golfo</span>
+      <span class="logo-sub">Puntarenas · Nicoya Peninsula</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('EN')">EN</button>
+        <span class="lang-sep">·</span>
+        <button class="lang-btn" onclick="setLang('ES')">ES</button>
+        <span class="lang-sep">·</span>
+        <button class="lang-btn" onclick="setLang('FR')">FR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Route banner -->
+  <div class="route-banner">
+    <div class="route-port">
+      <span class="port-label" data-i18n="departure">Departure</span>
+      <span class="port-name">Puntarenas</span>
+    </div>
+    <div class="route-arrow">
+      <div class="arrow-line">
+        <div class="ferry-track">
+          <span class="ferry-icon">⛴</span>
+        </div>
+      </div>
+      <span class="route-duration" data-i18n="duration">~1h 15min</span>
+    </div>
+    <div class="route-port" style="text-align:right;">
+      <span class="port-label" data-i18n="arrival">Arrival</span>
+      <span class="port-name">Paquera</span>
+    </div>
+  </div>
+
+  <!-- Schedule -->
+  <div class="schedule-strip" id="schedule-strip">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('tours')" id="tab-tours">
+      <span class="tab-icon">🗺</span>
+      <span data-i18n="tabTours">Tours</span>
+    </button>
+    <button class="tab" onclick="switchTab('curio')" id="tab-curio">
+      <span class="tab-icon">🦜</span>
+      <span data-i18n="tabCurio">Curiosities</span>
+    </button>
+    <button class="tab" onclick="switchTab('info')" id="tab-info">
+      <span class="tab-icon">ℹ</span>
+      <span data-i18n="tabInfo">Info</span>
+    </button>
+  </div>
+
+  <!-- Tours Panel -->
+  <div class="panel active" id="panel-tours">
+    <p class="section-label" data-i18n="toursLabel">Experiences from Paquera</p>
+    <div class="tours-grid" id="tours-grid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- Curiosities Panel -->
+  <div class="panel" id="panel-curio">
+    <p class="section-label" data-i18n="curioLabel">Did you know?</p>
+    <div class="curio-grid" id="curio-grid">
+      <!-- filled by JS -->
+    </div>
+    <div class="wildlife-section">
+      <p class="section-label" data-i18n="wildlifeLabel">Wildlife radar · Gulf of Nicoya</p>
+      <div id="wildlife-list">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Panel -->
+  <div class="panel" id="panel-info">
+    <div id="info-content">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom nav -->
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('tours')" id="nav-tours">
+    <span class="nav-icon">🗺</span>
+    <span class="nav-label" data-i18n="tabTours">Tours</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('curio')" id="nav-curio">
+    <span class="nav-icon">🦜</span>
+    <span class="nav-label" data-i18n="tabCurio">Curiosities</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('info')" id="nav-info">
+    <span class="nav-icon">ℹ</span>
+    <span class="nav-label" data-i18n="tabInfo">Info</span>
+  </button>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-title">Book Tour</div>
+    <div class="modal-subtitle" id="modal-subtitle">Reserve your spot · Confirmation by email</div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="formName">Full Name</label>
+      <input type="text" class="form-input" id="form-name" placeholder="María González">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="formEmail">Email</label>
+      <input type="email" class="form-input" id="form-email" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="formDate">Preferred Date</label>
+      <input type="date" class="form-input" id="form-date">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="formGuests">Guests</label>
+      <select class="form-input" id="form-guests">
+        <option>1</option><option>2</option><option>3</option>
+        <option>4</option><option>5+</option>
+      </select>
+    </div>
+    <button class="submit-btn" onclick="submitBooking()" data-i18n="formSubmit">Request Booking</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const lang = { current: 'EN' };
+
+const i18n = {
+  EN: {
+    departure: 'Departure', arrival: 'Arrival', duration: '~1h 15min',
+    tabTours: 'Tours', tabCurio: 'Curiosities', tabInfo: 'Info',
+    toursLabel: 'Experiences from Paquera',
+    curioLabel: 'Did you know?',
+    wildlifeLabel: 'Wildlife radar · Gulf of Nicoya',
+    formName: 'Full Name', formEmail: 'Email', formDate: 'Preferred Date',
+    formGuests: 'Guests', formSubmit: 'Request Booking',
+    bookNow: 'Book Now', from: 'from', perPerson: 'per person',
+    readMore: 'Tap to explore', readLess: 'Close',
+    toastMsg: '✓ Request sent! We\'ll confirm by email.',
+    scheduleLabel: 'Today\'s departures'
+  },
+  ES: {
+    departure: 'Salida', arrival: 'Llegada', duration: '~1h 15min',
+    tabTours: 'Tours', tabCurio: 'Curiosidades', tabInfo: 'Info',
+    toursLabel: 'Experiencias desde Paquera',
+    curioLabel: '¿Sabías que?',
+    wildlifeLabel: 'Radar de fauna · Golfo de Nicoya',
+    formName: 'Nombre completo', formEmail: 'Correo electrónico', formDate: 'Fecha preferida',
+    formGuests: 'Personas', formSubmit: 'Solicitar reserva',
+    bookNow: 'Reservar', from: 'desde', perPerson: 'por persona',
+    readMore: 'Toca para explorar', readLess: 'Cerrar',
+    toastMsg: '✓ ¡Solicitud enviada! Confirmaremos por correo.',
+    scheduleLabel: 'Salidas de hoy'
+  },
+  FR: {
+    departure: 'Départ', arrival: 'Arrivée', duration: '~1h 15min',
+    tabTours: 'Tours', tabCurio: 'Curiosités', tabInfo: 'Info',
+    toursLabel: 'Expériences depuis Paquera',
+    curioLabel: 'Le saviez-vous?',
+    wildlifeLabel: 'Faune · Golfe de Nicoya',
+    formName: 'Nom complet', formEmail: 'Email', formDate: 'Date souhaitée',
+    formGuests: 'Personnes', formSubmit: 'Demander une réservation',
+    bookNow: 'Réserver', from: 'à partir de', perPerson: 'par personne',
+    readMore: 'Appuyer pour explorer', readLess: 'Fermer',
+    toastMsg: '✓ Demande envoyée ! Confirmation par email.',
+    scheduleLabel: 'Départs du jour'
+  }
+};
+
+const TOURS = [
+  {
+    emoji: '🌋',
+    title: { EN: 'Arenal Volcano & Hot Springs', ES: 'Volcán Arenal & Aguas Termales', FR: 'Volcan Arenal & Sources Thermales' },
+    subtitle: { EN: 'FULL DAY · ICONIC', ES: 'DÍA COMPLETO · ICÓNICO', FR: 'JOURNÉE ENTIÈRE · ICONIQUE' },
+    desc: { EN: 'Witness the majestic Arenal Volcano up close, hike lava trails through cloud forest, then soak in natural thermal pools fed by volcanic heat.', ES: 'Contemple el majestuoso Volcán Arenal, senderismo por senderos de lava y relájese en piscinas termales naturales.', FR: 'Admirez le volcan Arenal, randonnez sur des sentiers de lave et détendez-vous dans des sources thermales naturelles.' },
+    tags: { EN: ['All Day', 'Hiking', 'Thermal Pools', 'Departs 6am'], ES: ['Todo el día', 'Senderismo', 'Aguas termales', 'Sale 6am'], FR: ['Toute la journée', 'Randonnée', 'Sources chaudes', 'Départ 6h'] },
+    price: 89, highlight: true
+  },
+  {
+    emoji: '🐊',
+    title: { EN: 'Tarcoles River Croc Safari', ES: 'Safari de Cocodrilos · Río Tárcoles', FR: 'Safari Crocodiles · Río Tárcoles' },
+    subtitle: { EN: 'HALF DAY · WILD', ES: 'MEDIO DÍA · SALVAJE', FR: 'DEMI-JOURNÉE · SAUVAGE' },
+    desc: { EN: 'Cruise the Tarcoles River on a motorized boat, spotting American crocodiles — some over 4 meters long — plus herons, egrets and roseate spoonbills.', ES: 'Navegue por el río Tárcoles y observe cocodrilos americanos de hasta 4 metros, garzas, garcetas y espátulas rosadas.', FR: 'Naviguez sur le Tarcoles et observez des crocodiles géants, hérons, aigrettes et spatules roses.' },
+    tags: { EN: ['3 hours', 'Boat tour', 'Wildlife', 'Guided'], ES: ['3 horas', 'Tour en bote', 'Fauna', 'Con guía'], FR: ['3 heures', 'Tour en bateau', 'Faune', 'Guidé'] },
+    price: 49, highlight: false
+  },
+  {
+    emoji: '🐬',
+    title: { EN: 'Dolphin & Sunset Sail', ES: 'Delfines y Vela al Atardecer', FR: 'Dauphins & Voile au Coucher du Soleil' },
+    subtitle: { EN: 'AFTERNOON · MAGICAL', ES: 'TARDE · MÁGICO', FR: 'APRÈS-MIDI · MAGIQUE' },
+    desc: { EN: 'Sail into the Gulf of Nicoya on a catamaran. Spinner dolphins often bow-ride alongside. Catch the legendary sunset over the Pacific with a cold beer in hand.', ES: 'Navegue en catamarán por el Golfo de Nicoya. Delfines giradores nadan frente a la proa. El atardecer sobre el Pacífico es legendario.', FR: 'Voguez en catamaran dans le Golfe de Nicoya. Des dauphins acrobatiques suivent souvent le bateau. Coucher de soleil spectaculaire.' },
+    tags: { EN: ['3.5 hours', 'Catamaran', 'Snorkeling', 'Open bar'], ES: ['3.5 horas', 'Catamarán', 'Snorkel', 'Barra libre'], FR: ['3h30', 'Catamaran', 'Plongée', 'Bar ouvert'] },
+    price: 79, highlight: false
+  },
+  {
+    emoji: '🐒',
+    title: { EN: 'Monteverde Cloud Forest', ES: 'Bosque Nuboso de Monteverde', FR: 'Forêt Nuageuse de Monteverde' },
+    subtitle: { EN: 'FULL DAY · LEGENDARY', ES: 'DÍA COMPLETO · LEGENDARIO', FR: 'JOURNÉE ENTIÈRE · LÉGENDAIRE' },
+    desc: { EN: 'Walk suspension bridges through misty cloud forest, spot howler monkeys, quetzals, and hundreds of bird species. Zipline over the canopy for an aerial thrill.', ES: 'Puentes colgantes en la neblina del bosque nuboso. Monos aulladores, quetzales y cientos de aves. Tirolesa sobre el dosel.', FR: 'Ponts suspendus dans la brume, singes hurleurs, quetzals et espèces d\'oiseaux. Tyrolienne spectaculaire au-dessus de la canopée.' },
+    tags: { EN: ['Full day', 'Canopy', 'Birdwatching', 'Zip-line'], ES: ['Todo el día', 'Dosel', 'Aves', 'Tirolesa'], FR: ['Toute la journée', 'Canopée', 'Oiseaux', 'Tyrolienne'] },
+    price: 95, highlight: true
+  },
+  {
+    emoji: '🏄',
+    title: { EN: 'Surf Lesson · Playa Manzanillo', ES: 'Clase de Surf · Playa Manzanillo', FR: 'Cours de Surf · Playa Manzanillo' },
+    subtitle: { EN: 'MORNING · REFRESHING', ES: 'MAÑANA · REFRESCANTE', FR: 'MATIN · REVIGORANT' },
+    desc: { EN: 'Beginner-friendly surf lesson on one of Nicoya\'s most consistent beach breaks. Certified bilingual instructors, boards and rash guards included.', ES: 'Clase de surf para principiantes en uno de los mejores beach breaks de Nicoya. Instructores bilingües, tablas y lycras incluidas.', FR: 'Cours de surf pour débutants sur l\'un des meilleurs beach breaks de Nicoya. Instructeurs bilingues, planches incluses.' },
+    tags: { EN: ['2 hours', 'Beginner OK', 'Gear included', 'Beach'], ES: ['2 horas', 'Principiantes', 'Equipo incluido', 'Playa'], FR: ['2 heures', 'Débutants OK', 'Équipement', 'Plage'] },
+    price: 55, highlight: false
+  },
+  {
+    emoji: '🦋',
+    title: { EN: 'Cabo Blanco Reserve Hike', ES: 'Reserva Cabo Blanco · Senderismo', FR: 'Réserve Cabo Blanco · Randonnée' },
+    subtitle: { EN: 'MORNING · PRISTINE', ES: 'MAÑANA · PRÍSTINO', FR: 'MATIN · VIERGE' },
+    desc: { EN: 'Costa Rica\'s oldest national reserve. Hike to a deserted white-sand beach through primary tropical forest. Pelicans, frigate birds and sea turtles frequent the shore.', ES: 'La reserva más antigua de Costa Rica. Senderismo hasta una playa de arena blanca a través de bosque primario. Pelícanos y tortugas.', FR: 'La plus ancienne réserve du Costa Rica. Randonnée jusqu\'à une plage vierge en forêt tropicale primaire. Pélicans et tortues.' },
+    tags: { EN: ['Half day', 'Primary forest', 'Beach', 'Secluded'], ES: ['Medio día', 'Bosque primario', 'Playa', 'Aislado'], FR: ['Demi-journée', 'Forêt primaire', 'Plage', 'Isolé'] },
+    price: 45, highlight: false
+  }
+];
+
+const CURIOSITIES = [
+  {
+    emoji: '🌊',
+    title: { EN: 'Gulf of Nicoya', ES: 'Golfo de Nicoya', FR: 'Golfe de Nicoya' },
+    teaser: { EN: 'The largest gulf in Central America.', ES: 'El golfo más grande de Centroamérica.', FR: 'Le plus grand golfe d\'Amérique centrale.' },
+    full: { EN: 'The Gulf of Nicoya stretches 130 km into Costa Rica\'s Pacific coast and is one of the most biodiverse marine ecosystems in Central America. Its mix of fresh and salt water creates nurseries for fish, shrimp, and countless migratory birds. The Tempisque River feeds it with nutrients from the Nicoya highlands.', ES: 'El Golfo de Nicoya se extiende 130 km hacia la costa Pacífica de Costa Rica y es uno de los ecosistemas marinos más biodiversos de Centroamérica. La mezcla de agua dulce y salada crea viveros para peces, camarones y aves migratorias. El río Tempisque lo alimenta con nutrientes de las tierras altas de Nicoya.', FR: 'Le Golfe de Nicoya s\'étend sur 130 km dans la côte Pacifique du Costa Rica. Son mélange d\'eau douce et salée crée des nurseries pour les poissons, crevettes et oiseaux migrateurs. Le fleuve Tempisque l\'alimente en nutriments des hautes terres de Nicoya.' }
+  },
+  {
+    emoji: '😊',
+    title: { EN: 'Pura Vida & Blue Zone', ES: 'Pura Vida & Zona Azul', FR: 'Pura Vida & Zone Bleue' },
+    teaser: { EN: 'Nicoya is one of 5 Blue Zones on Earth.', ES: 'Nicoya es una de las 5 Zonas Azules del mundo.', FR: 'Nicoya est l\'une des 5 Zones Bleues de la planète.' },
+    full: { EN: 'The Nicoya Peninsula is one of only five "Blue Zones" in the world — places where people regularly live past 100. Scientists attribute longevity to a diet of beans, corn, squash, strong social bonds, a sense of purpose ("plan de vida"), and the famously sunny disposition captured in "Pura Vida." Residents here have the lowest rate of middle-age mortality on the planet.', ES: 'La Península de Nicoya es una de las cinco "Zonas Azules" del mundo, lugares donde las personas regularmente viven más de 100 años. Los científicos lo atribuyen a la dieta de frijoles, maíz y zapallo, vínculos sociales fuertes, un sentido de propósito ("plan de vida") y la famosa actitud "Pura Vida". Los residentes tienen la tasa más baja de mortalidad de mediana edad del planeta.', FR: 'La péninsule de Nicoya est l\'une des cinq "Zones Bleues" mondiales où les gens vivent régulièrement au-delà de 100 ans. Les scientifiques l\'attribuent à un régime à base de haricots, maïs et courge, des liens sociaux forts, un sens du but ("plan de vida") et le fameux "Pura Vida". Les habitants ont le plus faible taux de mortalité d\'âge moyen au monde.' }
+  },
+  {
+    emoji: '🐸',
+    title: { EN: 'Red-eyed Tree Frog', ES: 'Rana de ojos rojos', FR: 'Grenouille aux yeux rouges' },
+    teaser: { EN: 'Costa Rica holds 4% of Earth\'s biodiversity.', ES: 'Costa Rica alberga el 4% de la biodiversidad mundial.', FR: 'Le Costa Rica abrite 4% de la biodiversité mondiale.' },
+    full: { EN: 'Though Costa Rica covers just 0.03% of Earth\'s surface, it harbors over 4% of all known species. This includes 915 bird species, 35,000 insects, 200 mammals, and famous icons like the red-eyed tree frog and resplendent quetzal. The country abolished its army in 1948 and redirected funds to education and conservation — a decision that shaped its remarkable ecological legacy.', ES: 'Aunque Costa Rica cubre solo el 0.03% de la superficie terrestre, alberga más del 4% de todas las especies conocidas. Esto incluye 915 especies de aves, 35,000 insectos, 200 mamíferos y íconos como la rana de ojos rojos y el quetzal. El país abolió su ejército en 1948 y redirigió fondos a educación y conservación.', FR: 'Bien que le Costa Rica ne couvre que 0,03% de la surface terrestre, il abrite plus de 4% de toutes les espèces connues. Cela inclut 915 espèces d\'oiseaux, 35 000 insectes, 200 mammifères. Le pays a aboli son armée en 1948 et a redirigé les fonds vers l\'éducation et la conservation.' }
+  },
+  {
+    emoji: '☕',
+    title: { EN: 'Coffee & Chocolate', ES: 'Café & Chocolate', FR: 'Café & Chocolat' },
+    teaser: { EN: 'Some of the world\'s best coffee grows here.', ES: 'Aquí crece uno de los mejores cafés del mundo.', FR: 'L\'un des meilleurs cafés du monde pousse ici.' },
+    full: { EN: 'Costa Rican coffee — particularly from Tarrazú, Naranjo, and the Zona de los Santos — is prized globally for its bright acidity and clean, sweet profile. Coffee was introduced in 1779 and literally funded the construction of Costa Rica\'s National Theater. Meanwhile, cacao, native to Mesoamerica, is experiencing a renaissance with single-origin craft chocolate makers emerging across the country.', ES: 'El café costarricense — especialmente de Tarrazú, Naranjo y la Zona de los Santos — es premiado globalmente por su acidez brillante y perfil limpio y dulce. El café fue introducido en 1779 y literalmente financió la construcción del Teatro Nacional. El cacao también vive un renacimiento con chocolateros artesanales en todo el país.', FR: 'Le café costaricien — particulièrement de Tarrazú et la Zona de los Santos — est réputé mondialement pour son acidité vive et son profil propre. Le café a été introduit en 1779 et a financé la construction du Théâtre National. Le cacao vit aussi une renaissance avec des chocolatiers artisans émergents.' }
+  },
+  {
+    emoji: '🌴',
+    title: { EN: 'Mangrove Secrets', ES: 'Secretos del Manglar', FR: 'Secrets des Mangroves' },
+    teaser: { EN: 'Mangroves protect coasts and nurse sea life.', ES: 'Los manglares protegen costas y crían vida marina.', FR: 'Les mangroves protègent les côtes et nourrissent la vie marine.' },
+    full: { EN: 'The Gulf of Nicoya\'s mangrove forests are nurseries for over 100 species of fish and crustaceans. A single hectare of mangrove sequesters more carbon than an equivalent area of Amazon rainforest. Scarlet macaws, crocodiles, iguanas, and four species of mangrove tree are all found in the estuaries you can glimpse from the ferry. Costa Rica has protected 99% of its remaining mangroves.', ES: 'Los manglares del Golfo de Nicoya son viveros para más de 100 especies de peces y crustáceos. Una hectárea de manglar secuestra más carbono que un área equivalente de la selva amazónica. Lapas rojas, cocodrilos, iguanas y cuatro especies de manglar habitan las estuarios visibles desde el ferry. Costa Rica protege el 99% de sus manglares.', FR: 'Les mangroves du Golfe de Nicoya sont des pépinières pour plus de 100 espèces de poissons et crustacés. Un hectare de mangrove séquestre plus de carbone qu\'une surface équivalente en Amazonie. Aras rouges, crocodiles et iguanes vivent dans les estuaires visibles depuis le ferry. Le Costa Rica protège 99% de ses mangroves.' }
+  },
+  {
+    emoji: '🌎',
+    title: { EN: 'No Army Since 1948', ES: 'Sin ejército desde 1948', FR: 'Sans armée depuis 1948' },
+    teaser: { EN: 'Costa Rica abolished its military 76 years ago.', ES: 'Costa Rica abolió su ejército hace 76 años.', FR: 'Le Costa Rica a aboli son armée il y a 76 ans.' },
+    full: { EN: 'On December 1, 1948, President José Figueres Ferrer dramatically smashed the wall of a military barracks with a hammer and declared Costa Rica would have no army. The constitution formally abolished the military in 1949. The funds were redirected to education and healthcare — Costa Rica now has one of the highest literacy rates and longest life expectancies in Latin America. December 1st is celebrated as Abolition Day.', ES: 'El 1 de diciembre de 1948, el Presidente José Figueres Ferrer rompió dramáticamente la pared de un cuartel con un martillo y declaró que Costa Rica no tendría ejército. La constitución abolió formalmente el ejército en 1949. Los fondos se redirigieron a educación y salud. El 1 de diciembre se celebra como el Día de la Abolición.', FR: 'Le 1er décembre 1948, le Président José Figueres Ferrer a brisé un mur de caserne avec un marteau et déclaré que le Costa Rica n\'aurait pas d\'armée. La constitution a formellement aboli l\'armée en 1949. Les fonds ont été redirigés vers l\'éducation et la santé. Le 1er décembre est fêté comme Jour de l\'Abolition.' }
+  }
+];
+
+const WILDLIFE = [
+  { emoji: '🐬', name: { EN: 'Spinner Dolphin', ES: 'Delfín giratorio', FR: 'Dauphin acrobate' }, detail: { EN: 'Common year-round · Bow-rides at dawn', ES: 'Todo el año · Nada frente a la proa al amanecer', FR: 'Toute l\'année · Sauts acrobatiques à l\'aube' }, chance: 72 },
+  { emoji: '🦅', name: { EN: 'Magnificent Frigatebird', ES: 'Fragata magnífica', FR: 'Frégate superbe' }, detail: { EN: 'Soars above the ferry · Distinctive forked tail', ES: 'Planea sobre el ferry · Cola bifurcada característica', FR: 'Plane au-dessus du ferry · Queue fourchue distinctive' }, chance: 88 },
+  { emoji: '🐢', name: { EN: 'Olive Ridley Sea Turtle', ES: 'Tortuga lora', FR: 'Tortue olivâtre' }, detail: { EN: 'Surfaces near Paquera Aug–Dec · Nests on nearby beaches', ES: 'Emerge cerca de Paquera ago–dic · Anida en playas cercanas', FR: 'Visible près de Paquera août–déc · Nidification sur plages proches' }, chance: 35 },
+  { emoji: '🐊', name: { EN: 'American Crocodile', ES: 'Cocodrilo americano', FR: 'Crocodile américain' }, detail: { EN: 'Sunning on mudflats near Puntarenas · Up to 5m long', ES: 'Toma el sol en playones cerca de Puntarenas · Hasta 5m', FR: 'Se prélasse sur vasières près de Puntarenas · Jusqu\'à 5m' }, chance: 60 },
+  { emoji: '🦜', name: { EN: 'Scarlet Macaw', ES: 'Lapa roja', FR: 'Ara rouge' }, detail: { EN: 'Spotted in pairs above coastal forest near Paquera', ES: 'Avistada en parejas sobre el bosque costero cerca de Paquera', FR: 'Observée en paires au-dessus de la forêt côtière' }, chance: 45 }
+];
+
+const SCHEDULE = [
+  { time: '06:00', dir: { EN: 'PUN→PAQ', ES: 'PUN→PAQ', FR: 'PUN→PAQ' } },
+  { time: '08:30', dir: { EN: 'PUN→PAQ', ES: 'PUN→PAQ', FR: 'PUN→PAQ' } },
+  { time: '11:00', dir: { EN: 'PAQ→PUN', ES: 'PAQ→PUN', FR: 'PAQ→PUN' } },
+  { time: '13:00', dir: { EN: 'PUN→PAQ', ES: 'PUN→PAQ', FR: 'PUN→PAQ' } },
+  { time: '15:30', dir: { EN: 'PAQ→PUN', ES: 'PAQ→PUN', FR: 'PAQ→PUN' } },
+  { time: '17:00', dir: { EN: 'PUN→PAQ', ES: 'PUN→PAQ', FR: 'PUN→PAQ' } },
+  { time: '19:30', dir: { EN: 'PAQ→PUN', ES: 'PAQ→PUN', FR: 'PAQ→PUN' } },
+];
+
+const INFO_SECTIONS = {
+  EN: [
+    {
+      title: '⛴ Ferry Information',
+      rows: [
+        { k: 'Operator', v: 'Naviera Tambor / Ferry Peninsular' },
+        { k: 'Duration', v: '~1 hour 15 minutes' },
+        { k: 'Route', v: 'Puntarenas ↔ Paquera' },
+        { k: 'Frequency', v: '7 departures daily' },
+        { k: 'Vehicle capacity', v: 'Cars, motorcycles, bikes welcome' }
+      ]
+    },
+    {
+      title: '💰 Fares',
+      rows: [
+        { k: 'Passenger (adult)', v: '₡1,050', hi: true },
+        { k: 'Child (under 12)', v: '₡550' },
+        { k: 'Car (standard)', v: '₡6,500' },
+        { k: 'Motorcycle', v: '₡2,200' },
+        { k: 'Bicycle', v: '₡350' }
+      ]
+    },
+    {
+      title: '📍 Getting There',
+      rows: [
+        { k: 'Puntarenas terminal', v: '~1h 30min from San José' },
+        { k: 'Paquera terminal', v: '30 min to Tambor / Montezuma' },
+        { k: 'Car queue advice', v: 'Arrive 45 min early in high season' },
+        { k: 'Currency', v: 'Colón (CRC) · USD accepted' }
+      ]
+    },
+    {
+      title: '🌡 Best Time to Visit',
+      rows: [
+        { k: 'Dry season', v: 'Dec – April (sunny, less crowds)' },
+        { k: 'Green season', v: 'May – Nov (lush, great surf)' },
+        { k: 'Peak months', v: 'Dec, Jan, July, Aug' },
+        { k: 'Water temp', v: '26–29°C year-round' }
+      ]
+    }
+  ],
+  ES: [
+    {
+      title: '⛴ Información del Ferry',
+      rows: [
+        { k: 'Operador', v: 'Naviera Tambor / Ferry Peninsular' },
+        { k: 'Duración', v: '~1 hora 15 minutos' },
+        { k: 'Ruta', v: 'Puntarenas ↔ Paquera' },
+        { k: 'Frecuencia', v: '7 salidas diarias' },
+        { k: 'Vehículos', v: 'Carros, motos y bicicletas bienvenidos' }
+      ]
+    },
+    {
+      title: '💰 Tarifas',
+      rows: [
+        { k: 'Pasajero adulto', v: '₡1,050', hi: true },
+        { k: 'Niño (menor de 12)', v: '₡550' },
+        { k: 'Auto estándar', v: '₡6,500' },
+        { k: 'Motocicleta', v: '₡2,200' },
+        { k: 'Bicicleta', v: '₡350' }
+      ]
+    },
+    {
+      title: '📍 Cómo llegar',
+      rows: [
+        { k: 'Terminal Puntarenas', v: '~1h 30min desde San José' },
+        { k: 'Terminal Paquera', v: '30 min a Tambor / Montezuma' },
+        { k: 'Consejo para autos', v: 'Llegue 45 min antes en temporada alta' },
+        { k: 'Moneda', v: 'Colón (CRC) · Dólares aceptados' }
+      ]
+    },
+    {
+      title: '🌡 Mejor época para visitar',
+      rows: [
+        { k: 'Temporada seca', v: 'Dic – Abr (soleado, menos turistas)' },
+        { k: 'Temporada verde', v: 'May – Nov (frondoso, buen surf)' },
+        { k: 'Meses pico', v: 'Dic, Ene, Jul, Ago' },
+        { k: 'Temp. del agua', v: '26–29°C todo el año' }
+      ]
+    }
+  ],
+  FR: [
+    {
+      title: '⛴ Informations Ferry',
+      rows: [
+        { k: 'Opérateur', v: 'Naviera Tambor / Ferry Peninsular' },
+        { k: 'Durée', v: '~1 heure 15 minutes' },
+        { k: 'Itinéraire', v: 'Puntarenas ↔ Paquera' },
+        { k: 'Fréquence', v: '7 départs par jour' },
+        { k: 'Véhicules', v: 'Voitures, motos et vélos acceptés' }
+      ]
+    },
+    {
+      title: '💰 Tarifs',
+      rows: [
+        { k: 'Passager (adulte)', v: '₡1,050', hi: true },
+        { k: 'Enfant (moins de 12 ans)', v: '₡550' },
+        { k: 'Voiture (standard)', v: '₡6,500' },
+        { k: 'Moto', v: '₡2,200' },
+        { k: 'Vélo', v: '₡350' }
+      ]
+    },
+    {
+      title: '📍 Comment y aller',
+      rows: [
+        { k: 'Terminal Puntarenas', v: '~1h30 de San José' },
+        { k: 'Terminal Paquera', v: '30 min jusqu\'à Tambor / Montezuma' },
+        { k: 'File voiture', v: 'Arriver 45 min à l\'avance en haute saison' },
+        { k: 'Monnaie', v: 'Colón (CRC) · USD acceptés' }
+      ]
+    },
+    {
+      title: '🌡 Meilleure période',
+      rows: [
+        { k: 'Saison sèche', v: 'Déc – Avril (ensoleillé, moins de monde)' },
+        { k: 'Saison verte', v: 'Mai – Nov (luxuriant, belles vagues)' },
+        { k: 'Mois de pointe', v: 'Déc, Jan, Juil, Août' },
+        { k: 'Temp. de l\'eau', v: '26–29°C toute l\'année' }
+      ]
+    }
+  ]
+};
+
+let activeTour = null;
+
+function t(key) { return i18n[lang.current][key] || key; }
+
+function setLang(l) {
+  lang.current = l;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === l);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[l][key]) el.textContent = i18n[l][key];
+  });
+  renderAll();
+}
+
+function switchTab(tab) {
+  ['tours','curio','info'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('nav-' + t).classList.toggle('active', t === tab);
+  });
+}
+
+function renderSchedule() {
+  const strip = document.getElementById('schedule-strip');
+  strip.innerHTML = SCHEDULE.map(s => `
+    <div class="time-pill">
+      <span class="time-val">${s.time}</span>
+      <span class="time-dir">${s.dir[lang.current]}</span>
+    </div>
+  `).join('');
+}
+
+function renderTours() {
+  const l = lang.current;
+  document.getElementById('tours-grid').innerHTML = TOURS.map((tour, i) => `
+    <div class="tour-card">
+      <div class="tour-header">
+        <div class="tour-emoji">${tour.emoji}</div>
+        <div class="tour-info">
+          <div class="tour-subtitle">${tour.subtitle[l]}</div>
+          <div class="tour-title">${tour.title[l]}</div>
+          <div class="tour-desc">${tour.desc[l]}</div>
+          <div class="tour-meta">
+            ${tour.tags[l].map((tag, ti) => `<span class="tag${ti === 0 ? ' highlight' : ''}">${tag}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="tour-footer">
+        <div class="price-block">
+          <span class="price-from">${t('from')}</span>
+          <span class="price-val">$${tour.price}</span>
+          <span class="price-per">${t('perPerson')}</span>
+        </div>
+        <button class="book-btn" onclick="openModal(${i})">${t('bookNow')}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCurio() {
+  const l = lang.current;
+  document.getElementById('curio-grid').innerHTML = CURIOSITIES.map((c, i) => `
+    <div class="curio-card" id="curio-${i}" onclick="toggleCurio(${i})">
+      <div class="curio-emoji">${c.emoji}</div>
+      <div class="curio-title">${c.title[l]}</div>
+      <div class="curio-teaser">${c.teaser[l]}</div>
+      <div class="curio-full">${c.full[l]}</div>
+      <div class="curio-tap">${t('readMore')}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('wildlife-list').innerHTML = WILDLIFE.map(w => `
+    <div class="wildlife-row">
+      <div class="wildlife-emoji">${w.emoji}</div>
+      <div class="wildlife-info">
+        <div class="wildlife-name">${w.name[l]}</div>
+        <div class="wildlife-detail">${w.detail[l]}</div>
+      </div>
+      <div class="sighting-bar">
+        <div class="sighting-fill" style="width: ${w.chance}%"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderInfo() {
+  const sections = INFO_SECTIONS[lang.current];
+  document.getElementById('info-content').innerHTML = sections.map(sec => `
+    <div class="info-section">
+      <div class="info-card">
+        <div class="info-card-title">${sec.title}</div>
+        ${sec.rows.map(r => `
+          <div class="info-row">
+            <span class="info-key">${r.k}</span>
+            <span class="info-val${r.hi ? ' highlight' : ''}">${r.v}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAll() {
+  renderSchedule();
+  renderTours();
+  renderCurio();
+  renderInfo();
+}
+
+function toggleCurio(i) {
+  const card = document.getElementById('curio-' + i);
+  const wasExpanded = card.classList.contains('expanded');
+  document.querySelectorAll('.curio-card').forEach(c => c.classList.remove('expanded'));
+  if (!wasExpanded) card.classList.add('expanded');
+}
+
+function openModal(tourIndex) {
+  activeTour = tourIndex;
+  const tour = TOURS[tourIndex];
+  const l = lang.current;
+  document.getElementById('modal-title').textContent = tour.title[l];
+  document.getElementById('modal-subtitle').textContent = `$${tour.price} ${t('perPerson')} · ${tour.tags[l][0]}`;
+  document.getElementById('modal-overlay').classList.add('open');
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('form-date').min = today;
+  document.getElementById('form-date').value = today;
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay') || e.currentTarget?.classList?.contains('modal-close')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+function submitBooking() {
+  const name = document.getElementById('form-name').value.trim();
+  const email = document.getElementById('form-email').value.trim();
+  if (!name || !email) {
+    showToast('Please fill in name and email');
+    return;
+  }
+  document.getElementById('modal-overlay').classList.remove('open');
+  showToast(t('toastMsg'));
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+renderAll();
+</script>
+</body>
+</html>
